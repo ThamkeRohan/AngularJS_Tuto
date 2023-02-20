@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+  <!-- saying entire app is controlled by myApp module -->
+  <head>
+    <title>TheNetNinja Angular Playlist</title>
+    <link href="content/css/styles.css" rel="stylesheet" type="text/css" />
+    <script src="app/lib/angular.min.js"></script>
+    <script src="app\app.js">//module path</script>
+  </head>
+  <body>
+    <!-- ng-something: this attributes which are added to html elem are directives
+      We  can direct angular to do some kind of behaviour like initialize all app as angularjs app or create a model to store data
+      Here they take the form of attribute but not necessary they can take the form of tag ,so we can create custom directive and add some logic
+
+    ng-app : to say every thing inside the tag is angular js application
+    
+    ng-model:model represents data in application.The ngModel directive is a directive that is used to bind the values of the HTML controls (input, select, and textarea) or any custom form controls, and stores the required user value in a variable
+    below example show two way data binding:views are changing the data,which is then changing the view
+     -->
+
+    <input type="text" ng-model="name" placeholder="Your Name">
+    <p>Your Name is : {{name}}</p>
+
+<!-- {{}} : any js expression can be written inside {{}},like 5*6,variable,obj.prop,var.method(),etc
+          They can also be used inside the attributes
+      
+    ng-init: to initialize the data when the application loads.But we normally use controllers instead.      
+
+     -->
+    <div ng-init="names=['Radha','Suman','Tisha','Shreya']">
+      <p>{{ names[0].toUpperCase() }} and {{ names[3] }}</p>
+      <p class="{{color}}" ng-init="color='red'">{{color}}</p>
+    </div>
+    <p>{{color}}</p>
+
+
+    <!-- The ng-repeat directive repeats a set of HTML, a given number of times.
+    The set of HTML will be repeated once per item in a collection.
+    The collection must be an array or an object.
+    syntax:
+    x in records
+    (key, value) in myObj -->
+    <div ng-init="ninjas=['ram','shyam','sahil']">
+      <ul>
+        <li ng-repeat="ninja in ninjas">{{ninja}}</li>
+      </ul>
+    </div>
+    <div ng-init="person={name:'Rohan',age:19}">
+      <ul>
+        <li ng-repeat="(key,value) in person">{{key}} : {{value}}</li>
+      </ul>
+    </div>
+
+    <!-- As the size of the application grows it requires multiple js files to control the app.
+    Angular Module is used to divide the code in logical parts.A app can have one or more module.
+    A module contains controllers,config,run method.
+    Here one module is created.And this module is controlling our entire app -->
+
+    <!-- AngularJS controllers control the data of AngularJS applications.We have different controllers to control different parts of the application.
+    syntax: moduleName.controller("controllerName",function($scope){
+      //controlling logic for some section of the app
+    view and controller share $scope ,using which they share the data.  
+    }) -->
+    <div ng-controller="FriendController">
+      <ul>
+        <!-- accessing scope obj data -->
+        <li>{{developer}}</li>
+        <li ng-repeat="friend in friends">{{friend}}</li>
+      </ul>
+    </div>
+
+    <!-- Filters can be added in AngularJS to format data.
+    Filters can be added to expressions by using the pipe character |, followed by a filter.
+    uppercase
+    lowercase -->
+    <div ng-init="lowercaseMsg='hello'">
+      {{ lowercaseMsg | uppercase }}
+    </div>
+    <div ng-init="uppercaseMsg='hello'">
+      {{ uppercaseMsg | lowercase }}
+    </div>
+    <div ng-init="price=50">
+      {{ price | currency }}
+    </div>
+
+    <!-- Filters are added to directives, like ng-repeat, by using the pipe character |, followed by a filter: -->
+    <div ng-controller="OrderByController">
+      <ul>
+        <li ng-repeat="emp in employees | orderBy:'name'">
+          {{ emp.name }} - {{ emp.salary }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- The filter filter selects a subset of an array.
+    The filter filter can only be used on arrays, and it returns an array containing only the matching items. -->
+    <div ng-controller="OrderByController">
+      <input type="text" placeholder="Enter the name..." ng-model="empName">
+      <ul>
+      <li ng-repeat="emp in employees | filter:empName">
+        {{ emp.name }}
+      </li>
+      </ul>
+    </div>
+
+    <!-- The ng-include directive includes HTML from an external file. -->
+    <!-- It is useful as size of application grows,so easy to seperate different sections in different html files and can reuse the same file -->
+    <!-- <ng-include src="'filename'" ></ng-include> //another syntax in form of tag -->
+    <header ng-include="'header.html'"></header>
+
+    <!-- ng-show : shows the elem if it is set to true or else hides it
+    ng-hide : hides the elem if it is set to true or else shows it -->
+    <div ng-show="true">ng-show</div>
+    <div ng-hide="false">ng-hide</div>
+
+
+    <!-- The ng-click directive tells AngularJS what to do when an HTML element is clicked. -->
+    <section ng-controller="OrderByController">
+      <!-- order is var -->
+      <button ng-click="order='name'">Order By Name</button>
+      <button ng-click="order='salary'">Order By Salary</button>
+      <ul>
+        <li ng-repeat="emp in employees | orderBy:order">
+          <img ng-src="{{emp.profile}}" alt="img" style="width:50px">
+          <h3>{{ emp.name }}</h3>
+          <h3>{{ emp.salary }}</h3>
+          <span ng-click="removeEmp(emp)" style="color:red;cursor: pointer;font-size: 50px;">*</span>
+        </li>
+      </ul>
+      <!-- The ng-submit directive specifies a function to run when the form is submitted.
+      Note: model variable declared in html becomes available to $scope obj shared btwn html section and corresponding controller -->
+      <form ng-submit="addEmp()">
+        <!-- now newEmp becomes available to controller -->
+        <input type="text" placeholder="Name" ng-model="newEmp.name">
+        <input type="text" placeholder="Salary" ng-model="newEmp.salary">
+        <button>Add</button>
+      </form>
+    </section>
+
+
+  </body>
+</html>
